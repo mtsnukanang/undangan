@@ -1,388 +1,567 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="notranslate" translate="no">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Pernikahan | Sarah & Bima</title>
-    <!-- Memuat Tailwind CSS dan Font -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Undangan Pernikahan Digital - Chay & Rafif</title>
+
+    <!-- Memuat Tailwind CSS untuk styling modern -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Memuat Animate.css untuk animasi bawaan -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Font Impor -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Ovo&display=swap" rel="stylesheet">
     <style>
-        /* Mengatur font dasar dan latar belakang lembut */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Tangerine:wght@400;700&display=swap');
-        
+        /* Konfigurasi CSS berdasarkan file sumber */
+        :root {
+            --inv-bg: #053a53;
+            --inv-base: #ffffff;
+            --inv-accent: #d7c09e;
+            --inv-border: #bf6d6b;
+            --menu-bg: #b8cee1;
+            --menu-inactive: #053a53;
+            --menu-active: #ffffff;
+            --btn-color: #053a53;
+            --font-base: "Ovo", serif;
+            --font-accent: "Jost", sans-serif;
+        }
+
+        /* Menggunakan Tailwind untuk menyederhanakan layout */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-base);
             background-color: #f7f3f1;
             overflow: hidden; 
             height: 100vh;
             position: relative;
         }
-        .header-font {
-            font-family: 'Playfair Display', serif;
-        }
-        .script-font {
-            font-family: 'Tangerine', cursive;
-        }
 
-        /* --- SLIDE CONTAINER (TRACK) & COVER --- */
-        #slide-track, #cover-slide {
+        /* Kelas untuk meniru gaya slide penuh layar */
+        .satumomen_track {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        .satumomen_slide {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            /* Pastikan konten di tengah */
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            z-index: 1;
+            overflow-y: auto;
+            padding-bottom: 4rem; /* Ruang untuk menu bawah */
+        }
+        .satumomen_slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        .container-mobile {
+            height: 100%;
+            max-width: 420px;
+            margin: auto;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+        .color-accent {
+            color: var(--inv-accent);
+        }
+        .font-latin {
+             /* Mengganti font eksternal yang sulit dimuat dengan Tangerine yang sudah umum untuk efek skrip */
+            font-family: 'Tangerine', cursive;
+        }
+
+        /* Efek animasi gelombang pada gambar sudut */
+        @keyframes wave-left { 0% { transform: rotate(-2deg); } 100% { transform: rotate(5deg); } }
+        @keyframes wave-right { 0% { transform: rotate(2deg); } 100% { transform: rotate(-5deg); } }
+
+        .animate-left img {
+            transform-origin: 50% 100%;
+            animation: wave-right 4s ease-in-out infinite alternate;
+        }
+        .animate-right img {
+            transform-origin: 50% 100%;
+            animation: wave-left 4s ease-in-out infinite alternate;
+        }
+
+        /* Styling Menu Bawah */
+        .satumomen_menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background-color: var(--menu-bg);
+            z-index: 30;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+        }
+        .satumomen_menu_list {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            white-space: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .satumomen_menu_item {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px; /* Minimal width for better touch target */
+            padding: 0 4px;
+            color: var(--menu-inactive);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .satumomen_menu_item.active {
+            color: var(--menu-active);
+            background-color: var(--inv-bg);
+            font-weight: bold;
+        }
+        .satumomen_menu_item span {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+        .satumomen_menu_item svg, .satumomen_menu_item i {
+             width: 24px;
+             height: 24px;
+        }
+        
+        /* Floating Action Buttons */
+        .floating-action {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            z-index: 25;
+            gap: 12px;
+        }
+        .btn-float {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
             justify-content: center;
             align-items: center;
+            color: var(--btn-color);
+            transition: background-color 0.3s;
+        }
+        .btn-float:hover {
+            background-color: white;
         }
 
-        /* --- INDIVIDUAL SLIDE (SECTION) --- */
-        .slide {
-            position: absolute; 
-            width: 100vw; 
-            height: 100vh;
-            opacity: 0; 
-            z-index: 1; 
-            transition: opacity 0.8s ease-in-out;
-            overflow-y: auto; 
-            padding-top: 2rem;
-            padding-bottom: 5rem; /* Ruang untuk Navigasi Bawah */
-            background-color: transparent; /* Slide background diatur per slide */
-        }
-
-        .slide.is-active {
-            opacity: 1; 
-            z-index: 10; 
-        }
-
-        /* --- ASSET BACKGROUND TAMBAHAN --- */
-        /* Background untuk SLIDE 1 (sekarang Slide 0 di main track) & Cover */
-        #cover-slide, #slide-0 {
-            background-color: #ffffff;
-            background-image: radial-gradient(#f5f5f5 1px, transparent 0);
-            background-size: 20px 20px;
-        }
-
-        /* Background untuk SLIDE 6 */
-        #slide-5 {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #f7f3f1 100%), #fff9f0;
-            background-color: #f7f3f1;
-        }
-        
-        /* Keyframes untuk efek muncul perlahan dan naik (Fade In Up) */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(25px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Menerapkan animasi pada konten yang berada di slide yang aktif */
-        .active-content {
-            opacity: 0; 
-            animation: fadeInUp 1s ease-out forwards;
-        }
-
-        /* Styling Ikon Navigasi */
-        .nav-item {
-            @apply flex flex-col items-center justify-center p-2 text-xs text-gray-500 transition duration-300;
-        }
-        .nav-item.active {
-            @apply text-amber-700 font-semibold;
-        }
+        /* Music button state icons */
+        #btnMusic .play, #btnAutoplay .play { display: block; }
+        #btnMusic.playing .play, #btnAutoplay.playing .play { display: none; }
+        #btnMusic.playing .pause, #btnAutoplay.playing .pause { display: block; }
+        #btnMusic .pause, #btnAutoplay .pause { display: none; }
     </style>
 </head>
+
 <body class="text-gray-800">
+    <main id="app">
+        <!-- AUDIO ELEMENT UNTUK BACKGROUND MUSIC -->
+        <audio id="music" loop preload="auto">
+            <!-- URL Musik Latar dari SoundCloud (Perlu MP3 Langsung) -->
+            <source src="https://assets.satumomen.com/musics/youtube-5x8nbq0h1ho.mp3" type="audio/mpeg">
+            Browser Anda tidak mendukung elemen audio.
+        </audio>
 
-    <!-- AUDIO ELEMENT UNTUK BACKGROUND MUSIC -->
-    <audio id="background-music" loop preload="auto">
-        <!-- 
-            CATATAN: Tautan SoundCloud tidak bisa langsung digunakan sebagai sumber MP3.
-            Silakan ganti 'YOUR_MP3_URL_HERE' dengan tautan langsung (.mp3) dari lagu 
-            yang Anda inginkan agar musik dapat dimainkan di browser.
-        -->
-        <source src="https://example.com/placeholder.mp3" type="audio/mpeg">
-        Browser Anda tidak mendukung elemen audio.
-    </audio>
+        <div id="workspace-container" class="position-fixed h-100 w-100" style="overflow: hidden;">
+            <div class="h-100 w-100 d-flex align-items-center justify-content-center">
+                <div class="canvas" style="height: 736px; width: 100vw;">
+                    <div id="satuMomen" data-guest="Nama Tamu" data-group="VIP" style="height: 100%; display: block;">
+                        <div class="satumomen_track">
+                            
+                            <!-- SLIDE 0: COVER / OPENING -->
+                            <li id="slide-0" class="satumomen_slide satumomen_cover active" data-index="0" style="display: block;">
+                                <div class="container-mobile cover" style="background-image: url(&quot;https://satumomen.com/themes/blue-casanova/bg.webp&quot;); padding-top: 5rem;">
+                                    <!-- Aset Sudut Bunga -->
+                                    <div class="frame">
+                                        <!-- Gambar Border Bawah (Placeholders untuk gambar lokal) -->
+                                        <div class="animate-right" style="position: absolute; left: 0px; top: 0px; width: 55%; transform: translate(-20%, -11%); transform-origin: left bottom;">
+                                            <div class="animate__animated animate__fadeInTopLeft animate__slower">
+                                                <img src="https://satumomen.com/themes/blue-casanova/tl.webp" alt="flowers" draggable="false" class="w-100">
+                                            </div>
+                                        </div>
+                                        <div class="animate-left" style="position: absolute; right: 0px; bottom: 0px; width: 50%; transform: translate(9%, 12%); transform-origin: right top;">
+                                            <div class="animate__animated animate__fadeInBottomRight animate__slower">
+                                                <img src="https://satumomen.com/themes/blue-casanova/br.webp" alt="flowers" draggable="false" class="w-100">
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    
+                                    <div class="h-full d-flex justify-content-center items-center text-center p-6">
+                                        <div class="w-100">
+                                            <div class="text-center mb-3" style="line-height: 1;">
+                                                <div class="editable animate__animated animate__fadeInDown animate__slower" style="font-size: 14.4px;">THE WEDDING OF</div>
+                                                <div class="color-accent editable font-latin animate__animated animate__fadeInLeft animate__slower" style="font-size: 150px; margin-bottom: -10%;">Chay</div>
+                                                <div class="position-relative editable font-latin color-accent animate__animated animate__zoomIn animate__slower" style="font-size: 60px; z-index: 1;">and</div>
+                                                <div class="color-accent editable font-latin animate__animated animate__fadeInRight animate__slower" style="font-size: 150px; margin-top: -15%;">Rafif</div>
+                                            </div>
+                                            
+                                            <div class="text-center mx-auto" style="max-width: 300px;">
+                                                <div class="text-center mb-3 p-4 bg-white/70 rounded-lg shadow-md animate__animated animate__zoomIn animate__slower">
+                                                    <div class="editable mb-1 animate__animated animate__fadeInUp animate__slower" style="font-size: 14px;">Kepada Yth;<br>Bapak/Ibu/Saudara/i</div> 
+                                                    <div id="guestNameSlot" class="editable color-accent text-lg font-weight-bold mb-1 animate__animated animate__fadeInUp animate__slower" style="font-size: 18px;">Nama Tamu</div>
+                                                </div>
+                                                
+                                                <button onclick="openInvitation()" class="btn-open-invitation btn rounded-full bg-amber-600 text-white hover:bg-amber-700 py-3 px-8 mt-10 animate__animated animate__fadeInUp animate__slow" style="font-size: 14px;">
+                                                    Buka Undangan
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li> 
 
-    <!-- --- COVER SLIDE (Halaman Pembuka) --- -->
-    <div id="cover-slide" class="bg-white z-20 flex flex-col items-center justify-center p-6 text-center">
-        <div class="active-content max-w-sm w-full">
-            <p class="text-sm tracking-widest text-gray-500 mb-6 uppercase">The Wedding Of</p>
-            <h1 class="script-font text-8xl font-bold text-gray-900 leading-none">Sarah</h1>
-            <p class="script-font text-4xl font-semibold text-amber-600 my-4">&</p>
-            <h1 class="script-font text-8xl font-bold text-gray-900 leading-none mb-16">Bima</h1>
+                            <!-- SLIDE 1: QUOTES (Diganti dengan Keluarga/Wali yang Diminta) -->
+                            <li id="slide-1" class="satumomen_slide" data-index="1" style="display: none;">
+                                <div class="container-mobile py-10 px-6" style="background-image: url(&quot;https://satumomen.com/themes/blue-casanova/bg.webp&quot;);">
+                                     <div class="h-full w-full flex flex-col justify-center items-center text-center">
+                                        <div class="w-full">
+                                            <div class="color-accent editable font-latin animate__animated animate__fadeInDown animate__slower mb-6" style="font-size: 34px; line-height: 1.2;">Restu Kedua Keluarga</div>
+                                        
+                                            <div class="text-center my-8 animate__animated animate__fadeInUp animate__slower" style="animation-delay: 500ms;">
+                                                <div class="text-xl font-bold color-accent mb-2">Sarah Alisa Putri</div>
+                                                <div class="editable text-sm">Putri dari Bapak **Arif Budiman** & Ibu **Diana Lestari**</div>
+                                                <a href="https://instagram.com/" target="_blank" class="mt-2 text-xs text-blue-600 hover:underline block">@instagram_sarah</a>
+                                            </div>
 
-            <!-- Kartu Salam Tamu (seperti contoh di gambar) -->
-            <div class="bg-amber-50 p-6 rounded-lg shadow-lg border-2 border-amber-200">
-                <p class="text-gray-700 mb-3">Kepada Yth;</p>
-                <p class="text-lg font-bold header-font text-amber-700">Bapak/Ibu/Saudara/i</p>
-                <p class="text-xl font-bold text-gray-900 mt-1">Nama Tamu</p>
+                                            <div class="mt-4 mb-8 editable text-center color-accent animate__animated animate__zoomIn animate__slower font-italic font-accent" style="font-size: 16px;">dengan</div>
+
+                                            <div class="text-center my-8 animate__animated animate__fadeInUp animate__slower" style="animation-delay: 1000ms;">
+                                                <div class="text-xl font-bold color-accent mb-2">Bima Sakti Yudha</div>
+                                                <div class="editable text-sm">Putra dari Bapak **Hendro Wiratama** & Ibu **Ratna Dewi**</div>
+                                                <a href="https://instagram.com/" target="_blank" class="mt-2 text-xs text-blue-600 hover:underline block">@instagram_bima</a>
+                                            </div>
+                                            
+                                            <div class="text-center mt-12 animate__animated animate__fadeInUp animate__slower" style="animation-delay: 1500ms;">
+                                                <div class="editable text-sm quotes mb-3 px-4">"Istri-istrimu adalah ladang bagimu, maka datangilah ladangmu itu kapan saja dan dengan cara yang kamu sukai."</div>
+                                                <div class="editable text-xs">(Surah Al-Baqoroh : 223)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li> 
+
+                            <!-- SLIDE 2: ACARA AKAD NIKAH -->
+                            <li id="slide-2" class="satumomen_slide" data-index="2" style="display: none;">
+                                <div class="container-mobile py-10 px-6" style="background-image: url(&quot;https://satumomen.com/themes/blue-casanova/bg.webp&quot;);">
+                                    <div class="h-full w-full flex flex-col justify-center items-center text-center">
+                                        <div class="w-full">
+                                            <div class="color-accent editable font-latin animate__animated animate__fadeInDown animate__slower mb-8" style="font-size: 34px; line-height: 1.2;">Akad Nikah</div>
+
+                                            <div class="bg-white/70 p-6 rounded-xl shadow-lg animate__animated animate__fadeInUp animate__slower">
+                                                <div class="text-lg font-bold">JUM'AT</div>
+                                                <div class="text-sm mb-4">November 2024</div>
+                                                
+                                                <div class="border-y py-4 my-4">
+                                                    <div class="text-4xl font-extrabold color-accent mb-2">22</div>
+                                                    <div class="text-xs">Tanggal</div>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <div class="text-lg font-bold">PUKUL 12.30 WIB</div>
+                                                    <div class="editable text-sm">Bertempat di:</div>
+                                                </div>
+
+                                                <div class="editable font-weight-bold font-accent text-lg">Kantor Urusan Agama</div>
+                                                <div class="editable text-sm">Jl. Bandeng II No. 23 Minomartani<br>Sleman - Yogyakarta</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li> 
+
+                            <!-- SLIDE 3: ACARA RESEPSI -->
+                            <li id="slide-3" class="satumomen_slide" data-index="3" style="display: none;">
+                                <div class="container-mobile py-10 px-6" style="background-image: url(&quot;https://satumomen.com/themes/blue-casanova/bg.webp&quot;);">
+                                    <div class="h-full w-full flex flex-col justify-center items-center text-center">
+                                        <div class="w-full">
+                                            <div class="color-accent editable font-latin animate__animated animate__fadeInDown animate__slower mb-8" style="font-size: 34px; line-height: 1.2;">Resepsi Pernikahan</div>
+
+                                            <div class="bg-white/70 p-6 rounded-xl shadow-lg animate__animated animate__fadeInUp animate__slower">
+                                                <div class="text-lg font-bold">SABTU</div>
+                                                <div class="text-sm mb-4">Desember 2024</div>
+                                                
+                                                <div class="border-y py-4 my-4">
+                                                    <div class="text-4xl font-extrabold color-accent mb-2">07</div>
+                                                    <div class="text-xs">Tanggal</div>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <div class="text-lg font-bold">PUKUL 18.00 - 20.00 WIB</div>
+                                                    <div class="editable text-sm">Bertempat di:</div>
+                                                </div>
+
+                                                <div class="editable font-weight-bold font-accent text-lg">GRIPHTA HOTEL</div>
+                                                <div class="editable text-sm">Jl..AKBP R. Agil Kusumadya No. 100<br>Jatimakmur Jati Wetan, Kec. Jati - Kudus</div>
+                                                
+                                                <a href="https://www.google.com/maps/place/?q=-6.8374899000000005,110.82201839999999" target="_blank" rel="noreferrer noopener" class="btn bg-amber-600 text-white rounded-full py-2 px-6 mt-4 inline-flex items-center">
+                                                    Lihat Lokasi (Maps)
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li> 
+
+                             <!-- SLIDE 4: PROKES & HITUNG MUNDUR -->
+                            <li id="slide-4" class="satumomen_slide" data-index="4" style="display: none;">
+                                <div class="container-mobile py-10 px-6" style="background-image: url(&quot;https://satumomen.com/themes/blue-casanova/bg.webp&quot;);">
+                                    <div class="h-full w-full flex flex-col justify-center items-center text-center">
+                                        <div class="w-full">
+                                             <div class="color-accent editable font-latin animate__animated animate__fadeInDown animate__slower mb-8" style="font-size: 34px; line-height: 1.2;">Menghitung Hari</div>
+                                            
+                                            <!-- Countdown -->
+                                            <div data-datetime="2024-12-07T18:00" id="countdown-timer" class="countdown-wrapper mx-auto mb-10 d-flex flex-column animate__animated animate__fadeInUp animate__slower" style="max-width: 280px;">
+                                                <div class="countdown text-center color-accent flex justify-between p-4 bg-white/70 rounded-xl shadow-lg">
+                                                    <div class="countdown-item day text-center w-1/4"><div class="number text-2xl font-bold">00</div> <div class="text editable text-xs">Hari</div></div> 
+                                                    <div class="countdown-item hour text-center w-1/4"><div class="number text-2xl font-bold">00</div> <div class="text editable text-xs">Jam</div></div> 
+                                                    <div class="countdown-item minute text-center w-1/4"><div class="number text-2xl font-bold">00</div> <div class="text editable text-xs">Menit</div></div> 
+                                                    <div class="countdown-item second text-center w-1/4"><div class="number text-2xl font-bold">00</div> <div class="text editable text-xs">Detik</div></div>
+                                                </div> 
+                                            </div>
+                                            
+                                            <h3 class="header-font text-2xl font-semibold text-amber-700 mb-6 animate__animated animate__fadeInUp animate__slower">Protokol Kesehatan</h3>
+                                            <div class="space-y-3 px-4">
+                                                <div class="flex items-center space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 animate__animated animate__fadeInUp animate__slower">
+                                                    <span class="text-red-500">😷</span>
+                                                    <p class="font-semibold text-sm text-gray-800">Wajib Masker</p>
+                                                </div>
+                                                <div class="flex items-center space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 animate__animated animate__fadeInUp animate__slower" style="animation-delay: 200ms;">
+                                                    <span class="text-red-500">↔️</span>
+                                                    <p class="font-semibold text-sm text-gray-800">Jaga Jarak Aman</p>
+                                                </div>
+                                                <div class="flex items-center space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 animate__animated animate__fadeInUp animate__slower" style="animation-delay: 400ms;">
+                                                    <span class="text-red-500">🧼</span>
+                                                    <p class="font-semibold text-sm text-gray-800">Gunakan Hand Sanitizer</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- SLIDE 5: GIFT/AMPLOP DIGITAL -->
+                            <li id="slide-5" class="satumomen_slide" data-index="5" style="display: none;">
+                                <div class="container-mobile py-10 px-6" style="background-image: url(&quot;https://satumomen.com/themes/blue-casanova/bg.webp&quot;);">
+                                    <div class="h-full w-full flex flex-col justify-center items-center text-center">
+                                        <div class="w-full">
+                                            <div class="color-accent editable font-latin animate__animated animate__fadeInDown animate__slower mb-6" style="font-size: 34px; line-height: 1.2;">Tanda Kasih (Gift)</div>
+                                            
+                                            <div class="editable mb-4 text-sm animate__animated animate__fadeInDown animate__slower">Terima kasih atas doa dan hadiah indah Anda.</div>
+                                            
+                                            <!-- Rekening 1: BCA (Sarah) -->
+                                            <div class="bg-white/80 p-5 rounded-xl shadow-md border-l-4 border-amber-600 text-left mb-6 animate__animated animate__zoomIn animate__slow">
+                                                <p class="text-sm font-medium text-amber-600 mb-1">Bank BCA (a.n. Sarah)</p>
+                                                <div class="flex justify-between items-center">
+                                                    <span id="rekeningSarah" class="text-xl font-mono text-gray-900 select-all">12345678</span>
+                                                    <button type="button" class="btn bg-blue-500 text-white rounded-md py-1 px-3 text-sm" data-text="12345678" onclick="copyText(event)">Salin Rekening</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Rekening 2: Mandiri (Bima) -->
+                                            <div class="bg-white/80 p-5 rounded-xl shadow-md border-l-4 border-amber-600 text-left mb-6 animate__animated animate__zoomIn animate__slow" style="animation-delay: 200ms;">
+                                                <p class="text-sm font-medium text-amber-600 mb-1">Bank Mandiri (a.n. Bima)</p>
+                                                <div class="flex justify-between items-center">
+                                                    <span id="rekeningBima" class="text-xl font-mono text-gray-900 select-all">0987654321</span>
+                                                    <button type="button" class="btn bg-blue-500 text-white rounded-md py-1 px-3 text-sm" data-text="0987654321" onclick="copyText(event)">Salin Rekening</button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Kirim Kado Fisik -->
+                                            <div class="bg-white/80 p-5 rounded-xl shadow-md border-l-4 border-amber-600 text-center animate__animated animate__zoomIn animate__slow" style="animation-delay: 400ms;">
+                                                <div class="editable font-weight-bold h5 color-accent mb-2 text-lg">Kirim Kado Fisik</div>
+                                                <div class="editable copy-address mb-3 text-sm" id="alamatKado">Anda dapat mengirim kado ke:<br>Jl. Kenanga Indah No. 45, Jakarta Selatan</div>
+                                                <button type="button" class="btn bg-amber-600 text-white rounded-md py-1 px-3 text-sm" data-text="Jl. Kenanga Indah No. 45, Jakarta Selatan" onclick="copyText(event)">Salin Alamat</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </li> 
+                            
+                            <!-- SLIDE 6: THANKS / PENUTUP -->
+                            <li id="slide-6" class="satumomen_slide" data-index="6" style="display: none;">
+                                <div class="container-mobile py-10 px-6" style="background-image: url(&quot;https://satumomen.com/themes/blue-casanova/bg.webp&quot;);">
+                                    <div class="h-full w-full flex flex-col justify-end items-center text-center">
+                                        <div class="w-full mb-12">
+                                            <div class="editable mb-4 text-sm animate__animated animate__fadeInDown animate__slower">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/ Saudara/I berkenan hadir untuk memberikan do’a restu.</div>
+                                            
+                                            <div class="color-accent editable mb-3 animate__animated animate__fadeInDown animate__slower font-accent text-lg">Salam Hormat Kedua Mempelai</div>
+                                            
+                                            <div class="editable mb-4 text-xl font-semibold script-font animate__animated animate__fadeInDown animate__slow">Chay & Rafif</div>
+                                            
+                                            <div class="text-center d-flex align-items-center justify-content-center animate__animated animate__fadeInDown animate__slow" style="gap: 14px; line-height: 1.2;">
+                                                <div class="text-xs">
+                                                    <div class="editable underline mb-1">Keluarga Sarah</div> 
+                                                    <div class="editable">Bpk. Arif Budiman<br>Ibu Diana Lestari</div>
+                                                </div> 
+                                                <div class="text-xs">
+                                                    <div class="editable underline mb-1">Keluarga Bima</div> 
+                                                    <div class="editable">Bpk. Hendro Wiratama<br>Ibu Ratna Dewi</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <button onclick="openInvitation()" class="mt-12 w-3/4 py-3 bg-amber-600 text-white rounded-full font-semibold shadow-xl hover:bg-amber-700 transition duration-300 flex items-center justify-center mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
-                Buka Undangan
+        </div> 
+
+        <!-- --- NAVIGASI SLIDE BAR BAWAH DENGAN ICON --- -->
+        <div id="nav-bar" class="satumomen_menu" style="display: none;">
+            <ul class="satumomen_menu_list">
+                <!-- 0: Opening (Envelope) -->
+                <li onclick="handleNavClick(0)" id="nav-0" class="satumomen_menu_item active">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg> 
+                    <span>Opening</span>
+                </li> 
+                <!-- 1: Couple (Heart) -->
+                <li onclick="handleNavClick(1)" id="nav-1" class="satumomen_menu_item">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path opacity=".4" d="M11.776 21.837a36.258 36.258 0 0 1-6.328-4.957 12.668 12.668 0 0 1-3.03-4.805C1.278 8.535 2.603 4.49 6.3 3.288A6.282 6.282 0 0 1 12.007 4.3a6.291 6.291 0 0 1 5.706-1.012c3.697 1.201 5.03 5.247 3.893 8.787a12.67 12.67 0 0 1-3.013 4.805 36.58 36.58 0 0 1-6.328 4.957l-.25.163-.24-.163Z"></path><path d="m12.01 22-.234-.163a36.316 36.316 0 0 1-6.337-4.957 12.667 12.667 0 0 1-3.048-4.805c-1.13-3.54.195-7.586 3.892-8.787a6.296 6.296 0 0 1 5.728 1.023V22ZM18.23 10a.719.719 0 0 1-.517-.278.818.818 0 0 1-.167-.592c.022-.702-.378-1.341-.994-1.59-.391-.107-.628-.53-.53-.948.093-.41.477-.666.864-.573a.384.384 0 0 1 .138.052c1.236.476 2.036 1.755 1.973 3.155a.808.808 0 0 1-.23.56.708.708 0 0 1-.537.213Z"></path></svg> 
+                    <span>Couple</span>
+                </li> 
+                <!-- 2: Akad (Calendar) -->
+                <li onclick="handleNavClick(2)" id="nav-2" class="satumomen_menu_item">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 16.87V9.257h18v7.674C21 20.07 19.024 22 15.863 22H8.127C4.996 22 3 20.03 3 16.87Zm4.96-2.46a.822.822 0 0 1-.85-.799c0-.46.355-.84.81-.861.444 0 .81.351.82.8a.822.822 0 0 1-.78.86Zm4.06 0a.822.822 0 0 1-.85-.799c0-.46.356-.84.81-.861.445 0 .81.351.82.8a.822.822 0 0 1-.78.86Zm4.03 3.68a.847.847 0 0 1-.82-.85.831.831 0 0 1 .81-.849h.01c.465 0 .84.38.84.849 0 .47-.375.85-.84.85Zm-4.88-.85c.02.46.395.821.85.8a.821.821 0 0 0 .78-.859.817.817 0 0 0-.82-.801.855.855 0 0 0-.81.86Zm-4.07 0c.02.46.395.821.85.8a.821.821 0 0 0 .78-.859.817.817 0 0 0-.82-.801.855.855 0 0 0-.81.86Zm8.14-3.639c0-.46.356-.83.81-.84.445 0 .8.359.82.8a.82.82 0 0 1-.79.849.814.814 0 0 1-.84-.799v-.01Z"></path><path opacity=".4" d="M3.003 9.257c.013-.587.063-1.752.156-2.127.474-2.11 2.084-3.45 4.386-3.64h8.911c2.282.2 3.912 1.55 4.386 3.64.092.365.142 1.539.155 2.127H3.003Z"></path><path d="M8.305 6.59c.435 0 .76-.329.76-.77V2.771A.748.748 0 0 0 8.306 2c-.435 0-.76.33-.76.771V5.82c0 .441.325.77.76.77ZM15.695 6.59c.425 0 .76-.329.76-.77V2.771a.754.754 0 0 0-.76-.771c-.435 0-.76.33-.76.771V5.82c0 .441.325.77.76.77Z"></path></svg>
+                    <span>Acara</span>
+                </li> 
+                <!-- 3: Maps (Location) -->
+                <li onclick="handleNavClick(3)" id="nav-3" class="satumomen_menu_item">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.532 2.937a6.89 6.89 0 0 1 7.034.058C17.71 4.327 19.012 6.705 19 9.26c-.05 2.54-1.447 4.929-3.193 6.775a18.727 18.727 0 0 1-3.358 2.82 1.173 1.173 0 0 1-.408.144.82.82 0 0 1-.39-.119 18.515 18.515 0 0 1-4.839-4.547A9.28 9.28 0 0 1 5 9.134c-.001-2.562 1.347-4.928 3.532-6.197Zm1.262 7.258a2.378 2.378 0 0 0 2.198 1.497 2.339 2.339 0 0 0 1.683-.701c.446-.454.696-1.07.694-1.713a2.423 2.423 0 0 0-1.462-2.243 2.346 2.346 0 0 0-2.594.52 2.455 2.455 0 0 0-.519 2.64Z"></path></svg> 
+                    <span>Maps</span>
+                </li> 
+                 <!-- 4: RSVP (Chat Bubble) -->
+                 <li onclick="handleNavClick(4)" id="nav-4" class="satumomen_menu_item">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path opacity=".4" d="M12.02 2C6.21 2 2 6.74 2 12c0 1.68.49 3.41 1.35 4.99.16.26.18.59.07.9l-.67 2.24c-.15.54.31.94.82.78l2.02-.6c.55-.18.98.05 1.491.36 1.46.86 3.279 1.3 4.919 1.3 4.96 0 10-3.83 10-10C22 6.65 17.7 2 12.02 2Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M11.98 13.29c-.71-.01-1.28-.58-1.28-1.29 0-.7.58-1.28 1.28-1.27.71 0 1.28.57 1.28 1.28 0 .7-.57 1.28-1.28 1.28Zm-4.61 0c-.7 0-1.28-.58-1.28-1.28 0-.71.57-1.28 1.28-1.28.71 0 1.28.57 1.28 1.28 0 .7-.57 1.27-1.28 1.28Zm7.94-1.28c0 .7.57 1.28 1.28 1.28.71 0 1.28-.58 1.28-1.28 0-.71-.57-1.28-1.28-1.28-.71 0-1.28.57-1.28 1.28Z"></path></svg>
+                    <span>RSVP</span>
+                </li> 
+                <!-- 5: Gift/Amplop (Kotak Hadiah) -->
+                <li onclick="handleNavClick(5)" id="nav-5" class="satumomen_menu_item">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path opacity=".4" d="M16.191 2H7.81C4.77 2 3 3.78 3 6.83v10.33C3 20.26 4.77 22 7.81 22h8.381C19.28 22 21 20.26 21 17.16V6.83C21 3.78 19.28 2 16.191 2" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M8.08 6.65v.01a.78.78 0 0 0 0 1.56h2.989c.431 0 .781-.35.781-.791a.781.781 0 0 0-.781-.779H8.08Zm7.84 6.09H8.08a.78.78 0 0 1 0-1.561h7.84a.781.781 0 0 1 0 1.561Zm0 4.57H8.08c-.3.04-.59-.11-.75-.36a.795.795 0 0 1 .75-1.21h7.84c.399.04.7.38.7.79 0 .399-.301.74-.7.78Z" fill="currentColor"></path></svg> 
+                    <span>Gift</span>
+                </li>
+                <!-- 6: Thanks/Penutup (Mosque/Checklist) -->
+                <li onclick="handleNavClick(6)" id="nav-6" class="satumomen_menu_item">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="currentColor" viewBox="0 0 24 24"><path opacity=".4" d="M12.086 22a.781.781 0 0 1-.359-.086L8.126 20.05c-1.022-.53-1.821-1.124-2.445-1.816a8.243 8.243 0 0 1-2.139-5.474L3.5 6.124a1.813 1.813 0 0 1 1.228-1.712l6.613-2.305c.392-.14.83-.142 1.23-.007l6.637 2.227c.743.248 1.245.93 1.25 1.695l.042 6.64a8.243 8.243 0 0 1-2.066 5.496c-.617.702-1.41 1.305-2.421 1.845l-3.57 1.906a.765.765 0 0 1-.357.091Z"></path><path d="M11.32 14.32a.763.763 0 0 1-.537-.21l-1.916-1.844a.722.722 0 0 1-.006-1.04.77.77 0 0 1 1.068-.007l1.379 1.326 3.368-3.32a.77.77 0 0 1 1.068-.007c.297.286.3.752.007 1.04l-3.9 3.844a.76.76 0 0 1-.532.219Z"></path></svg>
+                    <span>Thanks</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Floating Action Buttons -->
+        <div class="floating-action d-flex align-items-end flex-column">
+            <!-- Music Button -->
+            <button id="btnMusic" onclick="playMusic()" class="btn-float">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="play"><path d="M184,152V104a8,8,0,0,1,16,0v48a8,8,0,0,1-16,0Zm40-72a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,224,80ZM53.92,34.62A8,8,0,1,0,42.08,45.38L73.55,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V175.09l42.08,46.29a8,8,0,1,0,11.84-10.76Zm92.16,77.59A8,8,0,0,0,160,106.83V32a8,8,0,0,0-12.91-6.31l-39.85,31a8,8,0,0,0-1,11.7Z"></path></svg> 
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="pause"><path d="M160,32V224a8,8,0,0,1-12.91,6.31L77.25,176H32a16,16,0,0,1-16-16V96A16,16,0,0,1,32,80H77.25l69.84-54.31A8,8,0,0,1,160,32Zm32,64a8,8,0,0,0-8,8v48a8,8,0,0,0,16,0V104A8,8,0,0,0,192,96Zm32-16a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,224,80Z"></path></svg>
+            </button> 
+            <!-- Autoplay Button -->
+            <button id="btnAutoplay" onclick="toggleAutoplay()" class="btn-float">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="play"><path d="M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm36.44,110.66-48,32A8.05,8.05,0,0,1,112,168a8,8,0,0,1-8-8V96a8,8,0,0,1,12.44-6.66l48,32a8,8,0,0,1,0,13.32Z"></path></svg> 
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" class="pause"><path d="M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24ZM112,160a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0Zm48,0a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0Z"></path></svg>
             </button>
         </div>
-    </div>
-
-    <!-- Kontainer utama untuk semua slide (Tersembunyi sampai dibuka) -->
-    <div id="slide-track" style="display: none;">
-
-        <!-- SLIDE 0: NAMA & QUOTE UTAMA -->
-        <section id="slide-0" class="slide px-6 flex flex-col justify-center items-center text-center">
-            <div class="active-content">
-                <div class="w-40 h-40 mx-auto rounded-full overflow-hidden mb-6 shadow-xl border-4 border-amber-200">
-                    <img src="https://placehold.co/160x160/f5efe6/4a5568?text=S+%26+B" alt="Placeholder Foto Pasangan" class="w-full h-full object-cover">
-                </div>
-
-                <p class="text-lg tracking-widest text-gray-500 mb-3 uppercase">Pernikahan yang Dirahmati</p>
-                <h1 class="script-font text-6xl font-bold text-gray-900 mb-6">Sarah & Bima</h1>
-
-                <p class="text-gray-600 italic max-w-sm mx-auto">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya." - Ar-Rum: 21</p>
-            </div>
-        </section>
-
-        <!-- SLIDE 1: RESTU KELUARGA (WALI) -->
-        <section id="slide-1" class="slide bg-white py-12 px-6 flex flex-col justify-center items-center text-center">
-            <div class="active-content max-w-sm mx-auto">
-                <h2 class="header-font text-3xl font-semibold text-center mb-10 text-amber-700 border-b pb-3">Restu Kedua Keluarga</h2>
-                
-                <div class="mb-10 border-b pb-8">
-                    <p class="text-lg font-medium mb-2 text-gray-700">Mempelai Wanita</p>
-                    <h3 class="script-font text-5xl font-bold text-gray-900 mb-3">Sarah Alisa Putri</h3>
-                    <p class="text-sm text-gray-600">Putri dari:</p>
-                    <p class="font-semibold text-gray-700">Bapak **Arif Budiman** & Ibu **Diana Lestari**</p>
-                </div>
-
-                <div>
-                    <p class="text-lg font-medium mb-2 text-gray-700">Mempelai Pria</p>
-                    <h3 class="script-font text-5xl font-bold text-gray-900 mb-3">Bima Sakti Yudha</h3>
-                    <p class="text-sm text-gray-600">Putra dari:</p>
-                    <p class="font-semibold text-gray-700">Bapak **Hendro Wiratama** & Ibu **Ratna Dewi**</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 2: AKAD NIKAH -->
-        <section id="slide-2" class="slide bg-amber-50 py-12 px-6 flex flex-col justify-center items-center">
-            <div class="active-content max-w-md mx-auto w-full">
-                <h2 class="header-font text-3xl font-semibold text-center mb-10 text-amber-700 border-b pb-3">Akad Nikah</h2>
-
-                <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <p class="text-sm text-gray-500 mb-2">Hari, Tanggal:</p>
-                        <p class="text-2xl font-bold text-gray-900 mb-4">Minggu, 12 Januari 2026</p>
-                        
-                        <p class="text-sm text-gray-500 mb-2">Waktu:</p>
-                        <p class="text-xl font-semibold text-gray-900 mb-4">Pukul 09.00 WIB</p>
-                        
-                        <p class="text-sm text-gray-500 mb-2">Tempat:</p>
-                        <p class="text-base text-gray-700 mb-6">Masjid Agung Al-Hikmah, Jl. Kenanga Indah No. 45, Jakarta Selatan</p>
-                        
-                        <a href="https://maps.app.goo.gl/example" target="_blank" class="block w-full text-center py-3 bg-amber-600 text-white rounded-lg font-semibold shadow-md hover:bg-amber-700 transition duration-300">
-                            Lihat Lokasi (Maps)
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 3: RESEPSI PERNIKAHAN -->
-        <section id="slide-3" class="slide bg-amber-50 py-12 px-6 flex flex-col justify-center items-center">
-            <div class="active-content max-w-md mx-auto w-full">
-                <h2 class="header-font text-3xl font-semibold text-center mb-10 text-amber-700 border-b pb-3">Resepsi Pernikahan</h2>
-                
-                <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-xl shadow-lg">
-                        <p class="text-sm text-gray-500 mb-2">Hari, Tanggal:</p>
-                        <p class="text-2xl font-bold text-gray-900 mb-4">Minggu, 12 Januari 2026</p>
-                        
-                        <p class="text-sm text-gray-500 mb-2">Waktu:</p>
-                        <p class="text-xl font-semibold text-gray-900 mb-4">Pukul 11.00 - 15.00 WIB</p>
-                        
-                        <p class="text-sm text-gray-500 mb-2">Tempat:</p>
-                        <p class="text-base text-gray-700 mb-6">Gedung Puri Anggrek, Jl. Mawar Merah No. 12, Jakarta Selatan</p>
-                        
-                        <a href="https://maps.app.goo.gl/example2" target="_blank" class="block w-full text-center py-3 bg-amber-600 text-white rounded-lg font-semibold shadow-md hover:bg-amber-700 transition duration-300">
-                            Lihat Lokasi (Maps)
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- SLIDE 4: PROTOKOL KESEHATAN -->
-        <section id="slide-4" class="slide bg-white py-12 px-6 flex flex-col justify-center items-center text-center">
-            <div class="active-content max-w-md mx-auto">
-                <h2 class="header-font text-3xl font-semibold text-amber-700 mb-8">Protokol Kesehatan</h2>
-                <p class="text-gray-600 mb-6">Demi kenyamanan dan keamanan bersama, mohon kerjasamanya:</p>
-
-                <div class="space-y-4">
-                    <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 text-left">
-                        <span class="text-red-500 mt-1">😷</span>
-                        <div>
-                            <p class="font-semibold text-gray-800">Wajib Masker</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 text-left">
-                        <span class="text-red-500 mt-1">↔️</span>
-                        <div>
-                            <p class="font-semibold text-gray-800">Jaga Jarak</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 text-left">
-                        <span class="text-red-500 mt-1">🧼</span>
-                        <div>
-                            <p class="font-semibold text-gray-800">Gunakan Hand Sanitizer</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- SLIDE 5: AMPLOP DIGITAL & PENUTUP -->
-        <section id="slide-5" class="slide py-12 px-6 flex flex-col justify-center items-center text-center">
-            <div class="active-content max-w-md mx-auto w-full">
-                <h2 class="header-font text-3xl font-semibold text-amber-700 mb-8">Amplop Digital & Penutup</h2>
-                <p class="text-gray-600 mb-6">Doa restu Anda adalah karunia. Jika Anda berkenan memberi, silakan melalui:</p>
-
-                <div class="space-y-6 mb-8">
-                    <!-- Rekening Wanita -->
-                    <div class="bg-white p-5 rounded-xl shadow-md border-l-4 border-amber-600 text-left">
-                        <p class="text-sm font-medium text-amber-600 mb-1">Bank Mandiri (a.n. Sarah)</p>
-                        <div class="flex justify-between items-center">
-                            <span id="rekeningSarah" class="text-xl font-mono text-gray-900 select-all">123-456-7890-123</span>
-                            <button onclick="copyToClipboard('rekeningSarah', this)" class="ml-4 py-1 px-3 text-sm bg-amber-100 text-amber-700 rounded-full font-medium hover:bg-amber-200 transition duration-300">
-                                Salin
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Rekening Pria -->
-                    <div class="bg-white p-5 rounded-xl shadow-md border-l-4 border-amber-600 text-left">
-                        <p class="text-sm font-medium text-amber-600 mb-1">Bank BCA (a.n. Bima)</p>
-                        <div class="flex justify-between items-center">
-                            <span id="rekeningBima" class="text-xl font-mono text-gray-900 select-all">098-765-4321-098</span>
-                            <button onclick="copyToClipboard('rekeningBima', this)" class="ml-4 py-1 px-3 text-sm bg-amber-100 text-amber-700 rounded-full font-medium hover:bg-amber-200 transition duration-300">
-                                Salin
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <h3 class="header-font text-2xl font-semibold text-gray-900 mb-4">Terima Kasih</h3>
-                <p class="text-xl font-semibold script-font text-gray-900">Sarah & Bima</p>
-            </div>
-        </section>
-
-    </div>
-    
-    <!-- --- NAVIGASI SLIDE BAR BAWAH --- -->
-    <div id="nav-bar" class="fixed bottom-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-sm shadow-2xl flex justify-around items-center z-20 transition duration-500" style="display: none;">
         
-        <button onclick="handleNavClick(0)" id="nav-0" class="nav-item active">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-            <span>Opening</span>
-        </button>
-        
-        <button onclick="handleNavClick(1)" id="nav-1" class="nav-item">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            <span>Keluarga</span>
-        </button>
-        
-        <button onclick="handleNavClick(2)" id="nav-2" class="nav-item">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z"></path><path d="M12 8v5"></path><path d="M16.5 13.5L12 17L7.5 13.5"></path></svg>
-            <span>Waktu</span>
-        </button>
-        
-        <button onclick="handleNavClick(3)" id="nav-3" class="nav-item">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"></path><path d="M2 8h1a4 4 0 000 8h-1"></path><path d="M11 20V4l-5 5-5-5"></path></svg>
-            <span>Tempat</span>
-        </button>
-        
-        <button onclick="handleNavClick(4)" id="nav-4" class="nav-item">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z"></path><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>
-            <span>Prokes</span>
-        </button>
+        <!-- Kotak Pesan Salin Berhasil (Custom Alert) -->
+        <div id="copyMessage" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-xl opacity-0 transition-opacity duration-300 z-30" style="pointer-events: none;">
+            Nomor rekening berhasil disalin!
+        </div>
 
-        <button onclick="handleNavClick(5)" id="nav-5" class="nav-item">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <span>Amplop</span>
-        </button>
-    </div>
-
-    <!-- Kotak Pesan Salin Berhasil (Custom Alert) -->
-    <div id="copyMessage" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-xl opacity-0 transition-opacity duration-300 z-30" style="pointer-events: none;">
-        Nomor rekening berhasil disalin!
-    </div>
+    </main>
 
     <script>
-        const coverSlide = document.getElementById('cover-slide');
-        const slideTrack = document.getElementById('slide-track');
-        const slides = document.querySelectorAll('.slide');
+        const slides = document.querySelectorAll('.satumomen_slide');
         const navBar = document.getElementById('nav-bar');
-        const navItems = navBar.querySelectorAll('.nav-item');
-        const music = document.getElementById('background-music');
+        const navItems = navBar.querySelectorAll('.satumomen_menu_item');
+        const music = document.getElementById('music');
+        const btnMusic = document.getElementById('btnMusic');
+        const btnAutoplay = document.getElementById('btnAutoplay');
+        const guestNameSlot = document.getElementById('guestNameSlot');
+        const coverSlide = document.getElementById('slide-0');
         
         const totalSlides = slides.length;
         let currentSlide = 0;
         let autoplayInterval;
-        const autoplayDuration = 6000; // Auto slide setiap 6 detik
+        const autoplayDuration = 6000; // 6 detik per slide
+        let isAutoplayRunning = false;
+
+        // Inisialisasi: Sembunyikan semua slide kecuali cover
+        window.onload = () => {
+             // Secara default, hanya cover yang aktif di awal
+            slides.forEach(s => s.style.display = 'none');
+            if (coverSlide) {
+                coverSlide.style.display = 'block';
+                coverSlide.classList.add('active');
+            }
+        };
 
         // --- CORE SLIDE NAVIGATION LOGIC ---
 
         function updateSlide(index, manual = false) {
-            // Hentikan autoplay jika ini adalah navigasi manual (swipe atau klik)
-            if (manual) {
+            if (index < 0 || index >= totalSlides) return;
+            
+            // Atur ulang autoplay jika interaksi manual
+            if (manual && isAutoplayRunning) {
                 resetAutoplay();
             }
 
-            slides.forEach(s => {
-                s.classList.remove('is-active');
-                s.querySelector('.active-content')?.classList.remove('active-content');
+            // Nonaktifkan slide lama dan sembunyikan (agar transisi fade-in/out bekerja)
+            slides.forEach((s, i) => {
+                s.classList.remove('active');
+                if (i !== index) {
+                    // Beri jeda sebentar sebelum menyembunyikan agar fade out terlihat
+                    setTimeout(() => s.style.display = 'none', 500);
+                }
             });
 
+            // Aktifkan slide baru dan tampilkan
             currentSlide = index;
-            
             const currentSlideElement = slides[currentSlide];
-            currentSlideElement.classList.add('is-active');
-
-            const activeContent = currentSlideElement.querySelector('.active-content');
-            if (activeContent) {
-                activeContent.classList.remove('active-content'); 
-                void activeContent.offsetWidth; 
-                activeContent.classList.add('active-content');
-            }
+            currentSlideElement.style.display = 'block';
             
+            // Force reflow untuk memastikan animasi diulang
+            void currentSlideElement.offsetWidth; 
+            currentSlideElement.classList.add('active');
+            
+            // Setel ulang animasi konten di slide yang baru aktif
+            currentSlideElement.querySelectorAll('.animate__animated').forEach(el => {
+                const classes = Array.from(el.classList).filter(cls => cls.startsWith('animate__'));
+                el.classList.remove(...classes);
+                void el.offsetWidth; // Trigger reflow
+                el.classList.add(...classes);
+            });
+
             updateNavBar();
         }
 
         function nextSlide() {
-            if (currentSlide < totalSlides - 1) {
-                updateSlide(currentSlide + 1);
-            } else {
-                // Kembali ke slide pertama jika sudah di akhir (Loop)
-                updateSlide(0);
-            }
+            const nextIndex = (currentSlide + 1) % totalSlides;
+            updateSlide(nextIndex);
         }
 
         function prevSlide() {
-            if (currentSlide > 0) {
-                updateSlide(currentSlide - 1);
-            } else {
-                // Kembali ke slide terakhir jika sudah di awal
-                updateSlide(totalSlides - 1);
-            }
+            const prevIndex = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateSlide(prevIndex);
         }
         
         function updateNavBar() {
@@ -395,7 +574,7 @@
         }
 
         function handleNavClick(index) {
-            updateSlide(index, true); // Panggil dengan manual=true
+            updateSlide(index, true); 
         }
 
         // --- AUTOPLAY LOGIC ---
@@ -405,48 +584,77 @@
             autoplayInterval = setInterval(() => {
                 nextSlide();
             }, autoplayDuration);
+            isAutoplayRunning = true;
+            btnAutoplay.classList.add('playing');
+        }
+
+        function stopAutoplay() {
+            if (autoplayInterval) clearInterval(autoplayInterval);
+            isAutoplayRunning = false;
+            btnAutoplay.classList.remove('playing');
+        }
+
+        function toggleAutoplay() {
+            if (isAutoplayRunning) {
+                stopAutoplay();
+            } else {
+                startAutoplay();
+            }
         }
 
         function resetAutoplay() {
-            if (autoplayInterval) clearInterval(autoplayInterval);
-            startAutoplay();
+             if (isAutoplayRunning) {
+                stopAutoplay();
+                startAutoplay();
+            }
         }
 
-        // --- COVER AND MUSIC LOGIC ---
+        // --- COVER, MUSIC & COPY LOGIC ---
 
         function openInvitation() {
-            // 1. Sembunyikan cover page dengan efek fade
+            // Sembunyikan cover dan tampilkan slide 0 (opening)
+            coverSlide.classList.remove('active');
             coverSlide.style.opacity = '0';
             
-            // 2. Setelah fade selesai, sembunyikan sepenuhnya dan tampilkan konten utama
             setTimeout(() => {
                 coverSlide.style.display = 'none';
-                slideTrack.style.display = 'block';
                 navBar.style.display = 'flex'; // Tampilkan nav bar
+                
+                // Panggil playMusic untuk memulai musik saat interaksi pertama
+                playMusic(true); 
 
-                // 3. Mulai main content dari slide 0
-                updateSlide(0); 
+                // Mulai main content dari slide 1 (slide pertama setelah cover)
+                updateSlide(1); 
+                startAutoplay(); 
 
-                // 4. Mulai musik
-                const playPromise = music.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        // Autoplay dimulai setelah berhasil play
-                        startAutoplay();
-                    }).catch(error => {
-                        // Autoplay diblokir, tetap tampilkan slide tetapi tanpa musik
-                        console.log("Autoplay blocked. User needs interaction to start music.");
-                        startAutoplay();
-                    });
-                }
             }, 800); // Sesuaikan dengan durasi transisi fade
         }
-
-
-        // --- UTILITY FUNCTIONS ---
         
-        function copyToClipboard(elementId, buttonElement) {
-            const textToCopy = document.getElementById(elementId).innerText;
+        function playMusic(initial = false) {
+            const isPlaying = !music.paused;
+            
+            if (isPlaying) {
+                music.pause();
+                btnMusic.classList.remove('playing');
+            } else {
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        btnMusic.classList.add('playing');
+                    }).catch(error => {
+                        console.error("Music playback failed:", error);
+                        // Jika gagal (misalnya karena tidak ada interaksi), jangan ubah ikon
+                        if (!initial) alert('Gagal memutar musik. Pastikan browser mengizinkan autoplay.');
+                    });
+                }
+            }
+        }
+        
+        function copyText(event) {
+            event.preventDefault();
+            const button = event.target;
+            const textToCopy = button.getAttribute('data-text');
+
             const tempInput = document.createElement('textarea');
             tempInput.value = textToCopy;
             document.body.appendChild(tempInput);
@@ -458,13 +666,13 @@
                 messageBox.classList.remove('opacity-0');
                 messageBox.classList.add('opacity-100');
 
-                const originalText = buttonElement.innerText;
-                buttonElement.innerText = 'Tersalin!';
+                const originalText = button.innerText;
+                button.innerText = 'Tersalin!';
                 
                 setTimeout(() => {
                     messageBox.classList.remove('opacity-100');
                     messageBox.classList.add('opacity-0');
-                    buttonElement.innerText = originalText;
+                    button.innerText = originalText;
                 }, 2000);
             } catch (err) {
                 console.error('Gagal menyalin:', err);
@@ -473,23 +681,22 @@
             }
         }
         
-        // Tambahkan dukungan swipe/touch untuk navigasi di HP
+        // --- SWIPE GESTURE LOGIC ---
         let touchStartX = 0;
         let touchEndX = 0;
 
         document.addEventListener('touchstart', e => {
-            // Hanya deteksi swipe jika cover sudah tertutup
             if (coverSlide.style.display !== 'none') return;
             touchStartX = e.changedTouches[0].screenX;
-            resetAutoplay(); // Hentikan timer saat mulai swipe
+            stopAutoplay(); // Hentikan timer saat mulai swipe
         }, false);
 
         document.addEventListener('touchend', e => {
             if (coverSlide.style.display !== 'none') return;
             touchEndX = e.changedTouches[0].screenX;
             handleGesture();
-            // Lanjutkan autoplay setelah swipe selesai
-            startAutoplay();
+            // Lanjutkan autoplay setelah swipe selesai (jika autoplay aktif sebelumnya)
+            if (isAutoplayRunning) startAutoplay();
         }, false);
 
         function handleGesture() {
@@ -503,11 +710,37 @@
                 prevSlide();
             }
         }
+
+        // --- COUNTDOWN TIMER LOGIC ---
+        function updateCountdown() {
+            const countdownEl = document.getElementById('countdown-timer');
+            if (!countdownEl) return;
+            
+            const targetDateAttr = countdownEl.getAttribute('data-datetime');
+            const targetDate = new Date(targetDateAttr).getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                countdownEl.innerHTML = `<div class="text-xl text-red-500">ACARA SEDANG BERLANGSUNG!</div>`;
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownEl.querySelector('.day .number').innerText = String(days).padStart(2, '0');
+            countdownEl.querySelector('.hour .number').innerText = String(hours).padStart(2, '0');
+            countdownEl.querySelector('.minute .number').innerText = String(minutes).padStart(2, '0');
+            countdownEl.querySelector('.second .number').innerText = String(seconds).padStart(2, '0');
+        }
+
+        // Jalankan countdown setiap detik
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
         
-        // Inisialisasi awal (hanya menampilkan cover slide)
-        window.onload = () => {
-            coverSlide.style.opacity = '1';
-        };
     </script>
 </body>
 </html>
