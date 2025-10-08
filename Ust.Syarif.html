@@ -4,52 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undangan Pernikahan | Sarah & Bima</title>
-    <!-- Memuat Tailwind CSS -->
+    <!-- Memuat Tailwind CSS dan Font -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Mengatur font dasar dan latar belakang lembut */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Tangerine:wght@400;700&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f7f3f1;
-            /* Penting: mencegah scroll default saat menggunakan slide */
             overflow: hidden; 
             height: 100vh;
+            position: relative;
         }
         .header-font {
             font-family: 'Playfair Display', serif;
         }
+        .script-font {
+            font-family: 'Tangerine', cursive;
+        }
 
-        /* --- SLIDE CONTAINER (TRACK) --- */
-        #slide-track {
-            position: relative; /* Menjadi acuan untuk absolute positioning slide */
+        /* --- SLIDE CONTAINER (TRACK) & COVER --- */
+        #slide-track, #cover-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100vw;
-            height: 100vh; 
+            height: 100vh;
+            /* Pastikan konten di tengah */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         /* --- INDIVIDUAL SLIDE (SECTION) --- */
         .slide {
-            position: absolute; /* Tumpuk semua slide di atas satu sama lain */
-            top: 0;
-            left: 0;
-            width: 100vw; /* Setiap slide selebar layar penuh */
+            position: absolute; 
+            width: 100vw; 
             height: 100vh;
-            opacity: 0; /* Semua slide tersembunyi secara default */
-            z-index: 1; /* Di bawah slide aktif */
-            transition: opacity 0.8s ease-in-out; /* Transisi untuk efek fade */
-            /* Memastikan konten di dalam slide bisa di-scroll jika terlalu panjang */
+            opacity: 0; 
+            z-index: 1; 
+            transition: opacity 0.8s ease-in-out;
             overflow-y: auto; 
-            /* Mengatur padding agar konten tidak terlalu menempel pada navigasi */
             padding-top: 2rem;
-            padding-bottom: 7rem; 
+            padding-bottom: 5rem; /* Ruang untuk Navigasi Bawah */
+            background-color: transparent; /* Slide background diatur per slide */
         }
 
         .slide.is-active {
-            opacity: 1; /* Slide aktif muncul */
-            z-index: 10; /* Slide aktif harus di atas */
+            opacity: 1; 
+            z-index: 10; 
         }
 
+        /* --- ASSET BACKGROUND TAMBAHAN --- */
+        /* Background untuk SLIDE 1 (sekarang Slide 0 di main track) & Cover */
+        #cover-slide, #slide-0 {
+            background-color: #ffffff;
+            background-image: radial-gradient(#f5f5f5 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+        /* Background untuk SLIDE 6 */
+        #slide-5 {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #f7f3f1 100%), #fff9f0;
+            background-color: #f7f3f1;
+        }
+        
         /* Keyframes untuk efek muncul perlahan dan naik (Fade In Up) */
         @keyframes fadeInUp {
             from {
@@ -64,64 +85,98 @@
 
         /* Menerapkan animasi pada konten yang berada di slide yang aktif */
         .active-content {
-            opacity: 0; /* Mulai tersembunyi */
+            opacity: 0; 
             animation: fadeInUp 1s ease-out forwards;
         }
 
-        /* Menghilangkan scroll indicator karena sudah ada navigasi slide */
-        .scroll-indicator { display: none; }
+        /* Styling Ikon Navigasi */
+        .nav-item {
+            @apply flex flex-col items-center justify-center p-2 text-xs text-gray-500 transition duration-300;
+        }
+        .nav-item.active {
+            @apply text-amber-700 font-semibold;
+        }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Kontainer utama untuk semua slide -->
-    <div id="slide-track">
+    <!-- AUDIO ELEMENT UNTUK BACKGROUND MUSIC -->
+    <audio id="background-music" loop preload="auto">
+        <!-- 
+            CATATAN: Tautan SoundCloud tidak bisa langsung digunakan sebagai sumber MP3.
+            Silakan ganti 'YOUR_MP3_URL_HERE' dengan tautan langsung (.mp3) dari lagu 
+            yang Anda inginkan agar musik dapat dimainkan di browser.
+        -->
+        <source src="https://example.com/placeholder.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
 
-        <!-- SLIDE 1: PEMBUKAAN DAN NAMA MEMPELAI -->
-        <section id="slide-0" class="slide bg-white px-6 flex flex-col justify-center items-center text-center">
+    <!-- --- COVER SLIDE (Halaman Pembuka) --- -->
+    <div id="cover-slide" class="bg-white z-20 flex flex-col items-center justify-center p-6 text-center">
+        <div class="active-content max-w-sm w-full">
+            <p class="text-sm tracking-widest text-gray-500 mb-6 uppercase">The Wedding Of</p>
+            <h1 class="script-font text-8xl font-bold text-gray-900 leading-none">Sarah</h1>
+            <p class="script-font text-4xl font-semibold text-amber-600 my-4">&</p>
+            <h1 class="script-font text-8xl font-bold text-gray-900 leading-none mb-16">Bima</h1>
+
+            <!-- Kartu Salam Tamu (seperti contoh di gambar) -->
+            <div class="bg-amber-50 p-6 rounded-lg shadow-lg border-2 border-amber-200">
+                <p class="text-gray-700 mb-3">Kepada Yth;</p>
+                <p class="text-lg font-bold header-font text-amber-700">Bapak/Ibu/Saudara/i</p>
+                <p class="text-xl font-bold text-gray-900 mt-1">Nama Tamu</p>
+            </div>
+            
+            <button onclick="openInvitation()" class="mt-12 w-3/4 py-3 bg-amber-600 text-white rounded-full font-semibold shadow-xl hover:bg-amber-700 transition duration-300 flex items-center justify-center mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                Buka Undangan
+            </button>
+        </div>
+    </div>
+
+    <!-- Kontainer utama untuk semua slide (Tersembunyi sampai dibuka) -->
+    <div id="slide-track" style="display: none;">
+
+        <!-- SLIDE 0: NAMA & QUOTE UTAMA -->
+        <section id="slide-0" class="slide px-6 flex flex-col justify-center items-center text-center">
             <div class="active-content">
-                <!-- Placeholder Ilustrasi/Foto -->
-                <div class="w-48 h-48 mx-auto rounded-full overflow-hidden mb-6 shadow-xl border-4 border-amber-100">
-                    <img src="https://placehold.co/192x192/f5efe6/4a5568?text=S+%26+B" alt="Placeholder Foto Pasangan" class="w-full h-full object-cover">
+                <div class="w-40 h-40 mx-auto rounded-full overflow-hidden mb-6 shadow-xl border-4 border-amber-200">
+                    <img src="https://placehold.co/160x160/f5efe6/4a5568?text=S+%26+B" alt="Placeholder Foto Pasangan" class="w-full h-full object-cover">
                 </div>
 
-                <p class="text-sm tracking-widest text-gray-500 mb-3 uppercase">The Wedding of</p>
-                <h1 class="header-font text-5xl font-bold text-gray-900 mb-2">Sarah</h1>
-                <p class="header-font text-2xl font-semibold text-amber-600 mb-4">&</p>
-                <h1 class="header-font text-5xl font-bold text-gray-900 mb-8">Bima</h1>
+                <p class="text-lg tracking-widest text-gray-500 mb-3 uppercase">Pernikahan yang Dirahmati</p>
+                <h1 class="script-font text-6xl font-bold text-gray-900 mb-6">Sarah & Bima</h1>
 
-                <p class="text-gray-600 italic max-w-sm mx-auto">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang."</p>
+                <p class="text-gray-600 italic max-w-sm mx-auto">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya." - Ar-Rum: 21</p>
             </div>
         </section>
 
-        <!-- SLIDE 2: WALIMATUL URSY DAN KELUARGA -->
+        <!-- SLIDE 1: RESTU KELUARGA (WALI) -->
         <section id="slide-1" class="slide bg-white py-12 px-6 flex flex-col justify-center items-center text-center">
             <div class="active-content max-w-sm mx-auto">
                 <h2 class="header-font text-3xl font-semibold text-center mb-10 text-amber-700 border-b pb-3">Restu Kedua Keluarga</h2>
                 
                 <div class="mb-10 border-b pb-8">
                     <p class="text-lg font-medium mb-2 text-gray-700">Mempelai Wanita</p>
-                    <h3 class="header-font text-3xl font-bold text-gray-900 mb-3">Sarah Alisa Putri</h3>
+                    <h3 class="script-font text-5xl font-bold text-gray-900 mb-3">Sarah Alisa Putri</h3>
                     <p class="text-sm text-gray-600">Putri dari:</p>
                     <p class="font-semibold text-gray-700">Bapak **Arif Budiman** & Ibu **Diana Lestari**</p>
                 </div>
 
                 <div>
                     <p class="text-lg font-medium mb-2 text-gray-700">Mempelai Pria</p>
-                    <h3 class="header-font text-3xl font-bold text-gray-900 mb-3">Bima Sakti Yudha</h3>
+                    <h3 class="script-font text-5xl font-bold text-gray-900 mb-3">Bima Sakti Yudha</h3>
                     <p class="text-sm text-gray-600">Putra dari:</p>
                     <p class="font-semibold text-gray-700">Bapak **Hendro Wiratama** & Ibu **Ratna Dewi**</p>
                 </div>
             </div>
         </section>
 
-        <!-- SLIDE 3: WAKTU DAN TEMPAT (ACARA) -->
+        <!-- SLIDE 2: AKAD NIKAH -->
         <section id="slide-2" class="slide bg-amber-50 py-12 px-6 flex flex-col justify-center items-center">
             <div class="active-content max-w-md mx-auto w-full">
                 <h2 class="header-font text-3xl font-semibold text-center mb-10 text-amber-700 border-b pb-3">Akad Nikah</h2>
 
                 <div class="space-y-6">
-                    <!-- AKAD NIKAH -->
                     <div class="bg-white p-6 rounded-xl shadow-lg">
                         <p class="text-sm text-gray-500 mb-2">Hari, Tanggal:</p>
                         <p class="text-2xl font-bold text-gray-900 mb-4">Minggu, 12 Januari 2026</p>
@@ -140,13 +195,12 @@
             </div>
         </section>
 
-        <!-- SLIDE 4: WAKTU DAN TEMPAT (RESEPSI) -->
+        <!-- SLIDE 3: RESEPSI PERNIKAHAN -->
         <section id="slide-3" class="slide bg-amber-50 py-12 px-6 flex flex-col justify-center items-center">
             <div class="active-content max-w-md mx-auto w-full">
-                <h2 class="header-font text-3xl font-semibold text-center mb-10 text-amber-700 border-b pb-3">Resepsi</h2>
+                <h2 class="header-font text-3xl font-semibold text-center mb-10 text-amber-700 border-b pb-3">Resepsi Pernikahan</h2>
                 
                 <div class="space-y-6">
-                    <!-- RESEPSI PERNIKAHAN -->
                     <div class="bg-white p-6 rounded-xl shadow-lg">
                         <p class="text-sm text-gray-500 mb-2">Hari, Tanggal:</p>
                         <p class="text-2xl font-bold text-gray-900 mb-4">Minggu, 12 Januari 2026</p>
@@ -166,32 +220,29 @@
         </section>
 
 
-        <!-- SLIDE 5: PROTOKOL KESEHATAN -->
+        <!-- SLIDE 4: PROTOKOL KESEHATAN -->
         <section id="slide-4" class="slide bg-white py-12 px-6 flex flex-col justify-center items-center text-center">
             <div class="active-content max-w-md mx-auto">
                 <h2 class="header-font text-3xl font-semibold text-amber-700 mb-8">Protokol Kesehatan</h2>
-                <p class="text-gray-600 mb-6">Demi kenyamanan dan keamanan bersama, mohon kerjasamanya untuk mematuhi aturan berikut:</p>
+                <p class="text-gray-600 mb-6">Demi kenyamanan dan keamanan bersama, mohon kerjasamanya:</p>
 
                 <div class="space-y-4">
                     <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 text-left">
-                        <span class="text-red-500 mt-1">&#10003;</span>
+                        <span class="text-red-500 mt-1">😷</span>
                         <div>
                             <p class="font-semibold text-gray-800">Wajib Masker</p>
-                            <p class="text-sm text-gray-600">Tamu diwajibkan menggunakan masker selama berada di area acara.</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 text-left">
-                        <span class="text-red-500 mt-1">&#10003;</span>
+                        <span class="text-red-500 mt-1">↔️</span>
                         <div>
                             <p class="font-semibold text-gray-800">Jaga Jarak</p>
-                            <p class="text-sm text-gray-600">Mohon menjaga jarak fisik dan menghindari kerumunan.</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 p-3 bg-red-50 rounded-lg border border-red-200 text-left">
-                        <span class="text-red-500 mt-1">&#10003;</span>
+                        <span class="text-red-500 mt-1">🧼</span>
                         <div>
                             <p class="font-semibold text-gray-800">Gunakan Hand Sanitizer</p>
-                            <p class="text-sm text-gray-600">Gunakan cairan pembersih tangan yang telah disediakan.</p>
                         </div>
                     </div>
                 </div>
@@ -199,11 +250,11 @@
         </section>
 
 
-        <!-- SLIDE 6: AMPLOP DIGITAL & PENUTUP -->
-        <section id="slide-5" class="slide bg-amber-50 py-12 px-6 flex flex-col justify-center items-center text-center">
+        <!-- SLIDE 5: AMPLOP DIGITAL & PENUTUP -->
+        <section id="slide-5" class="slide py-12 px-6 flex flex-col justify-center items-center text-center">
             <div class="active-content max-w-md mx-auto w-full">
                 <h2 class="header-font text-3xl font-semibold text-amber-700 mb-8">Amplop Digital & Penutup</h2>
-                <p class="text-gray-600 mb-6">Doa restu Anda adalah karunia yang sangat berarti. Jika Anda berkenan memberi, kami menyediakan fasilitas ini:</p>
+                <p class="text-gray-600 mb-6">Doa restu Anda adalah karunia. Jika Anda berkenan memberi, silakan melalui:</p>
 
                 <div class="space-y-6 mb-8">
                     <!-- Rekening Wanita -->
@@ -230,46 +281,72 @@
                 </div>
                 
                 <h3 class="header-font text-2xl font-semibold text-gray-900 mb-4">Terima Kasih</h3>
-                <p class="text-sm text-gray-500 mb-2">Hormat Kami yang Berbahagia,</p>
-                <p class="text-xl font-semibold header-font text-gray-900">Keluarga Bapak Arif & Keluarga Bapak Hendro</p>
+                <p class="text-xl font-semibold script-font text-gray-900">Sarah & Bima</p>
             </div>
         </section>
 
     </div>
     
-    <!-- --- NAVIGASI SLIDE (Penting untuk pengalaman HP) --- -->
-    <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm shadow-2xl flex justify-center items-center space-x-4 z-10">
-        <button id="prevBtn" onclick="prevSlide()" class="p-2 rounded-full bg-amber-100 text-amber-700 disabled:opacity-50 transition duration-300 hover:bg-amber-200" disabled>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+    <!-- --- NAVIGASI SLIDE BAR BAWAH --- -->
+    <div id="nav-bar" class="fixed bottom-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-sm shadow-2xl flex justify-around items-center z-20 transition duration-500" style="display: none;">
+        
+        <button onclick="handleNavClick(0)" id="nav-0" class="nav-item active">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            <span>Opening</span>
+        </button>
+        
+        <button onclick="handleNavClick(1)" id="nav-1" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span>Keluarga</span>
+        </button>
+        
+        <button onclick="handleNavClick(2)" id="nav-2" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z"></path><path d="M12 8v5"></path><path d="M16.5 13.5L12 17L7.5 13.5"></path></svg>
+            <span>Waktu</span>
+        </button>
+        
+        <button onclick="handleNavClick(3)" id="nav-3" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"></path><path d="M2 8h1a4 4 0 000 8h-1"></path><path d="M11 20V4l-5 5-5-5"></path></svg>
+            <span>Tempat</span>
+        </button>
+        
+        <button onclick="handleNavClick(4)" id="nav-4" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z"></path><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>
+            <span>Prokes</span>
         </button>
 
-        <div id="dots-container" class="flex space-x-2">
-            <!-- Dots akan di-generate oleh JavaScript -->
-        </div>
-
-        <button id="nextBtn" onclick="nextSlide()" class="p-2 rounded-full bg-amber-600 text-white disabled:opacity-50 transition duration-300 hover:bg-amber-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        <button onclick="handleNavClick(5)" id="nav-5" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Amplop</span>
         </button>
     </div>
 
     <!-- Kotak Pesan Salin Berhasil (Custom Alert) -->
-    <div id="copyMessage" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-xl opacity-0 transition-opacity duration-300" style="pointer-events: none;">
+    <div id="copyMessage" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-xl opacity-0 transition-opacity duration-300 z-30" style="pointer-events: none;">
         Nomor rekening berhasil disalin!
     </div>
 
     <script>
+        const coverSlide = document.getElementById('cover-slide');
         const slideTrack = document.getElementById('slide-track');
-        const dotsContainer = document.getElementById('dots-container');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
         const slides = document.querySelectorAll('.slide');
+        const navBar = document.getElementById('nav-bar');
+        const navItems = navBar.querySelectorAll('.nav-item');
+        const music = document.getElementById('background-music');
+        
         const totalSlides = slides.length;
         let currentSlide = 0;
+        let autoplayInterval;
+        const autoplayDuration = 6000; // Auto slide setiap 6 detik
 
-        // --- SLIDE NAVIGATION LOGIC ---
+        // --- CORE SLIDE NAVIGATION LOGIC ---
 
-        function updateSlide(index) {
-            // 1. NON-ACTIVE state: Remove active class and content animation from all slides
+        function updateSlide(index, manual = false) {
+            // Hentikan autoplay jika ini adalah navigasi manual (swipe atau klik)
+            if (manual) {
+                resetAutoplay();
+            }
+
             slides.forEach(s => {
                 s.classList.remove('is-active');
                 s.querySelector('.active-content')?.classList.remove('active-content');
@@ -277,80 +354,99 @@
 
             currentSlide = index;
             
-            // 2. ACTIVE state: Add active class to the current slide
             const currentSlideElement = slides[currentSlide];
             currentSlideElement.classList.add('is-active');
 
-            // 3. Trigger content animation (FadeInUp) inside the active slide
             const activeContent = currentSlideElement.querySelector('.active-content');
             if (activeContent) {
-                 // Trigger re-animation by quickly removing and adding the class
                 activeContent.classList.remove('active-content'); 
-                void activeContent.offsetWidth; // Force reflow/repaint
+                void activeContent.offsetWidth; 
                 activeContent.classList.add('active-content');
             }
             
-            updateDots();
-            updateButtons();
+            updateNavBar();
         }
 
         function nextSlide() {
             if (currentSlide < totalSlides - 1) {
                 updateSlide(currentSlide + 1);
+            } else {
+                // Kembali ke slide pertama jika sudah di akhir (Loop)
+                updateSlide(0);
             }
         }
 
         function prevSlide() {
             if (currentSlide > 0) {
                 updateSlide(currentSlide - 1);
-            }
-        }
-
-        function updateButtons() {
-            prevBtn.disabled = currentSlide === 0;
-            nextBtn.disabled = currentSlide === totalSlides - 1;
-            
-            // Mengubah style tombol untuk menunjukkan slide terakhir (Terima Kasih)
-            if (currentSlide === totalSlides - 1) {
-                nextBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>'; // Ikon centang
-                nextBtn.classList.remove('bg-amber-600', 'hover:bg-amber-700');
-                nextBtn.classList.add('bg-green-600', 'hover:bg-green-700');
             } else {
-                nextBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>'; // Ikon panah
-                nextBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                nextBtn.classList.add('bg-amber-600', 'hover:bg-amber-700');
+                // Kembali ke slide terakhir jika sudah di awal
+                updateSlide(totalSlides - 1);
             }
         }
-
-        function createDots() {
-            dotsContainer.innerHTML = '';
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.classList.add('w-2', 'h-2', 'rounded-full', 'bg-gray-300', 'transition', 'duration-300');
-                dot.onclick = () => updateSlide(i);
-                dotsContainer.appendChild(dot);
-            }
-        }
-
-        function updateDots() {
-            const dots = dotsContainer.querySelectorAll('button');
-            dots.forEach((dot, index) => {
-                dot.classList.remove('bg-amber-600');
-                dot.classList.add('bg-gray-300');
+        
+        function updateNavBar() {
+            navItems.forEach((item, index) => {
+                item.classList.remove('active');
                 if (index === currentSlide) {
-                    dot.classList.remove('bg-gray-300');
-                    dot.classList.add('bg-amber-600');
+                    item.classList.add('active');
                 }
             });
         }
 
-        // --- UTILITY FUNCTIONS ---
+        function handleNavClick(index) {
+            updateSlide(index, true); // Panggil dengan manual=true
+        }
 
-        // Fungsi untuk menyalin teks ke clipboard
+        // --- AUTOPLAY LOGIC ---
+
+        function startAutoplay() {
+            if (autoplayInterval) clearInterval(autoplayInterval);
+            autoplayInterval = setInterval(() => {
+                nextSlide();
+            }, autoplayDuration);
+        }
+
+        function resetAutoplay() {
+            if (autoplayInterval) clearInterval(autoplayInterval);
+            startAutoplay();
+        }
+
+        // --- COVER AND MUSIC LOGIC ---
+
+        function openInvitation() {
+            // 1. Sembunyikan cover page dengan efek fade
+            coverSlide.style.opacity = '0';
+            
+            // 2. Setelah fade selesai, sembunyikan sepenuhnya dan tampilkan konten utama
+            setTimeout(() => {
+                coverSlide.style.display = 'none';
+                slideTrack.style.display = 'block';
+                navBar.style.display = 'flex'; // Tampilkan nav bar
+
+                // 3. Mulai main content dari slide 0
+                updateSlide(0); 
+
+                // 4. Mulai musik
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // Autoplay dimulai setelah berhasil play
+                        startAutoplay();
+                    }).catch(error => {
+                        // Autoplay diblokir, tetap tampilkan slide tetapi tanpa musik
+                        console.log("Autoplay blocked. User needs interaction to start music.");
+                        startAutoplay();
+                    });
+                }
+            }, 800); // Sesuaikan dengan durasi transisi fade
+        }
+
+
+        // --- UTILITY FUNCTIONS ---
+        
         function copyToClipboard(elementId, buttonElement) {
             const textToCopy = document.getElementById(elementId).innerText;
-            
-            // Menggunakan execCommand('copy') karena lebih kompatibel di lingkungan iframe/sandbox
             const tempInput = document.createElement('textarea');
             tempInput.value = textToCopy;
             document.body.appendChild(tempInput);
@@ -358,17 +454,13 @@
             
             try {
                 document.execCommand('copy');
-                
-                // Tampilkan notifikasi berhasil
                 const messageBox = document.getElementById('copyMessage');
                 messageBox.classList.remove('opacity-0');
                 messageBox.classList.add('opacity-100');
 
-                // Ubah teks tombol sementara
                 const originalText = buttonElement.innerText;
                 buttonElement.innerText = 'Tersalin!';
                 
-                // Sembunyikan notifikasi dan kembalikan teks tombol setelah 2 detik
                 setTimeout(() => {
                     messageBox.classList.remove('opacity-100');
                     messageBox.classList.add('opacity-0');
@@ -381,36 +473,41 @@
             }
         }
         
-        // Inisialisasi slide pertama saat dimuat
-        window.onload = () => {
-            createDots();
-            updateSlide(0);
-        };
-
         // Tambahkan dukungan swipe/touch untuk navigasi di HP
         let touchStartX = 0;
         let touchEndX = 0;
 
         document.addEventListener('touchstart', e => {
+            // Hanya deteksi swipe jika cover sudah tertutup
+            if (coverSlide.style.display !== 'none') return;
             touchStartX = e.changedTouches[0].screenX;
+            resetAutoplay(); // Hentikan timer saat mulai swipe
         }, false);
 
         document.addEventListener('touchend', e => {
+            if (coverSlide.style.display !== 'none') return;
             touchEndX = e.changedTouches[0].screenX;
             handleGesture();
+            // Lanjutkan autoplay setelah swipe selesai
+            startAutoplay();
         }, false);
 
         function handleGesture() {
-            const swipeThreshold = 50; // Minimum distance for a swipe
+            const swipeThreshold = 50; 
 
             if (touchEndX < touchStartX - swipeThreshold) {
-                // Swiped Left (Go Next)
+                // Swipe Kiri (Pindah ke Slide Berikutnya)
                 nextSlide();
             } else if (touchEndX > touchStartX + swipeThreshold) {
-                // Swiped Right (Go Previous)
+                // Swipe Kanan (Pindah ke Slide Sebelumnya)
                 prevSlide();
             }
         }
+        
+        // Inisialisasi awal (hanya menampilkan cover slide)
+        window.onload = () => {
+            coverSlide.style.opacity = '1';
+        };
     </script>
 </body>
 </html>
